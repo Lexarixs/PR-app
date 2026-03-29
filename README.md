@@ -15,18 +15,19 @@
 1. Клонируйте репозиторий:
 
 ```bash
-git clone https://github.com/yourusername/myapp.git
+git clone https://github.com/Lexarixs/PR-app.git
 
-Скопируйте проект в htdocs (XAMPP):
+1. Скопируйте проект в htdocs (XAMPP):
 C:\xampp\htdocs\myapp
-Запустите XAMPP (Apache + MySQL)
-Импортируйте базу данных:
-Откройте phpMyAdmin
-Импортируйте файл sql/init.sql
-Проверьте config/db.php:
+2. Запустите XAMPP (Apache + MySQL)
+3. Импортируйте базу данных:
+4. Откройте phpMyAdmin
+5. Импортируйте файл sql/init.sql
+6. Проверьте config/db.php:
 $conn = new mysqli("localhost", "root", "", "fitness");
-Откройте в браузере:
+7. Откройте в браузере:
 http://localhost/myapp/public/register.php
+
 Тестовые логины
 admin → admin123
 ivan (тренер) → trainer123
