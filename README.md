@@ -23,8 +23,3 @@ ivan / trainer123
 
 http://localhost/PR-app/public/login.php
 
-## GitHub
-
-git add .
-git commit -m "final version"
-git push origin main
