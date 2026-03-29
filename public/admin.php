@@ -1,52 +1,36 @@
 <?php
 require "../config/db.php";
-require "../includes/auth.php";
+$msg="";
 
-if (!isAdmin()) die("Нет доступа");
+if($_POST){
+    $u=trim($_POST['username']);
+    $p=trim($_POST['password']);
 
-// Удаление пользователя
-if(isset($_GET['delete'])){
-    $del = $_GET['delete'];
-    $conn->query("DELETE FROM users WHERE id=$del");
-    header("Location: admin.php");
-    exit;
+    $stmt=$conn->prepare("SELECT id FROM users WHERE username=?");
+    $stmt->bind_param("s",$u);
+    $stmt->execute();
+
+    if($stmt->get_result()->num_rows>0){
+        $msg="Пользователь существует";
+    }else{
+        $hash=password_hash($p,PASSWORD_DEFAULT);
+        $role="user";
+
+        $stmt=$conn->prepare("INSERT INTO users(username,password,role) VALUES(?,?,?)");
+        $stmt->bind_param("sss",$u,$hash,$role);
+        $stmt->execute();
+
+        $msg="Готово!";
+    }
 }
-
-// Добавление тренировки
-if ($_POST) {
-    $name = $_POST['name'];
-    $time = $_POST['time'];
-    $trainer_id = $_POST['trainer_id'];
-    $conn->query("INSERT INTO workouts(name,time,trainer_id) VALUES('$name','$time',$trainer_id)");
-}
-
-$users = $conn->query("SELECT * FROM users");
-$trainers = $conn->query("SELECT * FROM trainers");
 ?>
-
 <link rel="stylesheet" href="css/style.css">
 <div class="container">
-<h2>Админка</h2>
-
-<h3>Пользователи</h3>
-<?php while($u = $users->fetch_assoc()): ?>
-    <p>
-        <?=$u['username']?> (<?=$u['role']?>)
-        <a href="?delete=<?=$u['id']?>">[Удалить]</a>
-    </p>
-<?php endwhile; ?>
-
-<h3>Добавить тренировку</h3>
+<h2>Регистрация</h2>
+<p><?=$msg?></p>
 <form method="POST">
-    <input name="name" placeholder="Название"><br>
-    <input name="time" placeholder="Время"><br>
-    <select name="trainer_id">
-        <?php while($t = $trainers->fetch_assoc()): ?>
-            <option value="<?=$t['id']?>"><?=$t['name']?></option>
-        <?php endwhile; ?>
-    </select>
-    <button>Добавить</button>
+<input name="username"><br>
+<input type="password" name="password"><br>
+<button>Регистрация</button>
 </form>
-
-<a href="logout.php">Выйти</a>
 </div>

@@ -1,36 +1,30 @@
-# Fitness Web App
+# PR-app
 
-Простой проект для практики управления тренировками.
-
-## Структура проекта
-
-- `public/` — публичные PHP файлы
-- `public/css/style.css` — стили
-- `config/db.php` — подключение к MySQL
-- `includes/auth.php` — функции проверки сессий
-- `sql/init.sql` — база данных
+Система фитнес-зала (PHP + MySQL)
 
 ## Установка
 
-1. Клонируйте репозиторий:
+1. Скопировать в htdocs
+2. Запустить XAMPP (Apache + MySQL)
 
-```bash
-git clone https://github.com/Lexarixs/PR-app.git
+3. Открыть:
+http://localhost/PR-app/public/init_db.php
 
-1. Скопируйте проект в htdocs (XAMPP):
-C:\xampp\htdocs\myapp
-2. Запустите XAMPP (Apache + MySQL)
-3. Импортируйте базу данных:
-4. Откройте phpMyAdmin
-5. Импортируйте файл sql/init.sql
-6. Проверьте config/db.php:
-$conn = new mysqli("localhost", "root", "", "fitness");
-7. Откройте в браузере:
-http://localhost/myapp/public/register.php
+4. Затем:
+http://localhost/PR-app/public/fix_passwords.php
 
-Тестовые логины
-admin → admin123
-ivan (тренер) → trainer123
-maria (тренер) → trainer123
-user1 → user123
-user2 → user123
+## Логины
+
+admin / admin123  
+user1 / user123  
+ivan / trainer123  
+
+## Запуск
+
+http://localhost/PR-app/public/login.php
+
+## GitHub
+
+git add .
+git commit -m "final version"
+git push origin main

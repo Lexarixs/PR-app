@@ -1,33 +1,36 @@
 <?php
 require "../config/db.php";
-require "../includes/auth.php";
-requireLogin();
-if (!isUser()) die("Нет доступа");
+$msg="";
 
-$user_id = $_SESSION['id'];
+if($_POST){
+    $u=trim($_POST['username']);
+    $p=trim($_POST['password']);
 
-if (isset($_GET['book'])) {
-    $wid = $_GET['book'];
-    $conn->query("INSERT INTO bookings(user_id, workout_id) VALUES($user_id, $wid)");
-    header("Location: user.php");
-    exit;
+    $stmt=$conn->prepare("SELECT id FROM users WHERE username=?");
+    $stmt->bind_param("s",$u);
+    $stmt->execute();
+
+    if($stmt->get_result()->num_rows>0){
+        $msg="Пользователь существует";
+    }else{
+        $hash=password_hash($p,PASSWORD_DEFAULT);
+        $role="user";
+
+        $stmt=$conn->prepare("INSERT INTO users(username,password,role) VALUES(?,?,?)");
+        $stmt->bind_param("sss",$u,$hash,$role);
+        $stmt->execute();
+
+        $msg="Готово!";
+    }
 }
-
-$workouts = $conn->query("
-SELECT workouts.*, trainers.name AS trainer 
-FROM workouts 
-LEFT JOIN trainers ON workouts.trainer_id = trainers.id
-");
 ?>
-
 <link rel="stylesheet" href="css/style.css">
 <div class="container">
-<h2>Тренировки</h2>
-<?php while($w = $workouts->fetch_assoc()): ?>
-    <p>
-        <?=$w['name']?> (<?=$w['time']?>) — <?=$w['trainer']?>
-        <a href="?book=<?=$w['id']?>">[Записаться]</a>
-    </p>
-<?php endwhile; ?>
-<a href="logout.php">Выйти</a>
+<h2>Регистрация</h2>
+<p><?=$msg?></p>
+<form method="POST">
+<input name="username"><br>
+<input type="password" name="password"><br>
+<button>Регистрация</button>
+</form>
 </div>
