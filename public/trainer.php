@@ -1,24 +1,29 @@
 <?php
+session_start();
 require "../config/db.php";
-require "../includes/auth.php";
-requireLogin();
-if (!isTrainer()) die("Нет доступа");
 
-$username = $_SESSION['user'];
+if(!isset($_SESSION['user']) || $_SESSION['role'] != 'trainer'){
+    die("Нет доступа");
+}
 
+// Получаем список тренировок тренера
+$trainer_id = $_SESSION['id'];
 $res = $conn->query("
-SELECT workouts.* 
-FROM workouts
-JOIN trainers ON workouts.trainer_id = trainers.id
-WHERE trainers.name = '$username'
+    SELECT workouts.id, workouts.title 
+    FROM workouts 
+    WHERE trainer_id = $trainer_id
 ");
 ?>
 
 <link rel="stylesheet" href="css/style.css">
+
 <div class="container">
-<h2>Мои тренировки</h2>
-<?php while($w = $res->fetch_assoc()): ?>
-    <p><?=$w['name']?> (<?=$w['time']?>)</p>
+<h2>Привет, тренер <?=$_SESSION['user']?>!</h2>
+
+<h3>Ваши тренировки:</h3>
+<?php while($row = $res->fetch_assoc()): ?>
+    <p><?=$row['title']?></p>
 <?php endwhile; ?>
+
 <a href="logout.php">Выйти</a>
 </div>
