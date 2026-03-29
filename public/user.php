@@ -1,36 +1,33 @@
 <?php
+session_start();
 require "../config/db.php";
-$msg="";
 
-if($_POST){
-    $u=trim($_POST['username']);
-    $p=trim($_POST['password']);
+if(!isset($_SESSION['user'])) die("Вход нужен");
 
-    $stmt=$conn->prepare("SELECT id FROM users WHERE username=?");
-    $stmt->bind_param("s",$u);
-    $stmt->execute();
+$user_id=$_SESSION['id'];
 
-    if($stmt->get_result()->num_rows>0){
-        $msg="Пользователь существует";
-    }else{
-        $hash=password_hash($p,PASSWORD_DEFAULT);
-        $role="user";
-
-        $stmt=$conn->prepare("INSERT INTO users(username,password,role) VALUES(?,?,?)");
-        $stmt->bind_param("sss",$u,$hash,$role);
-        $stmt->execute();
-
-        $msg="Готово!";
-    }
+// запись
+if(isset($_GET['join'])){
+    $wid=$_GET['join'];
+    $conn->query("INSERT INTO registrations(user_id,workout_id) VALUES($user_id,$wid)");
 }
+
+$res=$conn->query("
+SELECT workouts.*, trainers.name 
+FROM workouts 
+LEFT JOIN trainers ON workouts.trainer_id=trainers.id
+");
 ?>
 <link rel="stylesheet" href="css/style.css">
 <div class="container">
-<h2>Регистрация</h2>
-<p><?=$msg?></p>
-<form method="POST">
-<input name="username"><br>
-<input type="password" name="password"><br>
-<button>Регистрация</button>
-</form>
+<h2>Тренировки</h2>
+
+<?php while($row=$res->fetch_assoc()): ?>
+<p>
+<?=$row['title']?> (<?=$row['name']?>)
+<a href="?join=<?=$row['id']?>">Записаться</a>
+</p>
+<?php endwhile; ?>
+
+<a href="logout.php">Выход</a>
 </div>
