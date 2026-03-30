@@ -6,7 +6,6 @@ if(!isset($_SESSION['user']) || $_SESSION['role'] != 'trainer'){
     die("Нет доступа");
 }
 
-// Получаем список тренировок тренера
 $trainer_id = $_SESSION['id'];
 $res = $conn->query("
     SELECT workouts.id, workouts.title 
