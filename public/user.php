@@ -6,7 +6,6 @@ if(!isset($_SESSION['user'])) die("Вход нужен");
 
 $user_id=$_SESSION['id'];
 
-// запись
 if(isset($_GET['join'])){
     $wid=$_GET['join'];
     $conn->query("INSERT INTO registrations(user_id,workout_id) VALUES($user_id,$wid)");
